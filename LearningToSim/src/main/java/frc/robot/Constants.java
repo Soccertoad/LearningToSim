@@ -11,4 +11,8 @@ public class Constants {
         public static final int XBOX_CONTROLLER_DRIVER_PORT = 0;
         public static final int XBOX_CONTROLLER_OPERATOR_PORT = 1;
     }
+    /** The Constants for Simulating the CTRE motors */
+    public static final class CTREConstants{
+        public static final int KRAKEN_ID = 2;
+    }
 }
