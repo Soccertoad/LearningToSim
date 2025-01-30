@@ -4,69 +4,56 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Elevator;
 
+/** This is a sample program to demonstrate the use of elevator simulation. */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
-
-  private final RobotContainer m_robotContainer;
+  private final Joystick m_joystick = new Joystick(Constants.kJoystickPort);
+  private final Elevator m_elevator = new Elevator();
 
   public Robot() {
-    m_robotContainer = new RobotContainer();
+    super(0.020);
   }
 
   @Override
   public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
+    // Update the telemetry, including mechanism visualization, regardless of mode.
+    m_elevator.updateTelemetry();
   }
 
   @Override
-  public void disabledInit() {}
-
-  @Override
-  public void disabledPeriodic() {}
-
-  @Override
-  public void disabledExit() {}
-
-  @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+  public void simulationPeriodic() {
+    // Update the simulation model.
+    m_elevator.simulationPeriodic();
   }
-
-  @Override
-  public void autonomousPeriodic() {}
-
-  @Override
-  public void autonomousExit() {}
 
   @Override
   public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    m_elevator.reset();
+  }
+
+  @Override
+  public void teleopPeriodic() {
+    if (m_joystick.getTrigger()) {
+      // Here, we set the constant setpoint of 10 meters.
+      m_elevator.reachGoal(Constants.kSetpointMeters);
+    } else {
+      // Otherwise, we update the setpoint to 1 meter.
+      m_elevator.reachGoal(Constants.kLowerkSetpointMeters);
     }
   }
 
   @Override
-  public void teleopPeriodic() {}
-
-  @Override
-  public void teleopExit() {}
-
-  @Override
-  public void testInit() {
-    CommandScheduler.getInstance().cancelAll();
+  public void disabledInit() {
+    // This just makes sure that our simulation code knows that the motor's off.
+    m_elevator.stop();
   }
 
   @Override
-  public void testPeriodic() {}
-
-  @Override
-  public void testExit() {}
+  public void close() {
+    m_elevator.close();
+    super.close();
+  }
 }
