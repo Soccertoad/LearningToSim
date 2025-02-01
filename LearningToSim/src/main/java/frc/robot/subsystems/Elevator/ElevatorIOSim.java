@@ -41,5 +41,18 @@ public class ElevatorIOSim implements ElevatorIO{
         runVolts(Volts.zero());
     }
 
+    @Override
+    public void updateIputs(ElevatorIOInputs inputs){
+        /*        
+        public MutDistance position = Inches.mutable(0);
+        public MutLinearVelocity velocity = InchesPerSecond.mutable(0);
 
+        public MutVoltage appliedVolts = Volts.mutable(0);
+        public MutCurrent supplyCurrent = Amps.mutable(0);
+        public MutCurrent torqueCurrent = Amps.mutable(0); 
+        */
+        sim.update(0.02);
+        inputs.position.mut_replace(sim.getPositionMeters(). Meters);
+
+    }
 }
