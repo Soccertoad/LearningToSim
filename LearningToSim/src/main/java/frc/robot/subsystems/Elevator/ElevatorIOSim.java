@@ -2,9 +2,11 @@ package frc.robot.subsystems.Elevator;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 
@@ -19,12 +21,14 @@ public class ElevatorIOSim implements ElevatorIO{
         true,
         Inches.of(0).in(Meters)
         );
-
+        private final MutVoltage appliedVolts = Volts.mutable(0);
         private final PIDController controller = new PIDController(0, 0, 0);
 
     @Override
     public void runVolts(Voltage volts) {
-        sim.setInputVoltage(volts.in(Volts));
+        double clampedEffort = MathUtil.clamp(volts.in(Volts), -12, 12);
+        appliedVolts.mut_replace(clampedEffort, Volts);
+        sim.setInputVoltage(clampedEffort);
     }
 
     @Override
@@ -52,7 +56,11 @@ public class ElevatorIOSim implements ElevatorIO{
         public MutCurrent torqueCurrent = Amps.mutable(0); 
         */
         sim.update(0.02);
-        inputs.position.mut_replace(sim.getPositionMeters(). Meters);
+        inputs.position.mut_replace(sim.getPositionMeters(), Meters);
+        inputs.velocity.mut_replace(sim.getVelocityMetersPerSecond(), MetersPerSecond);
+        inputs.appliedVolts.mut_replace(appliedVolts);
+        inputs.supplyCurrent.mut_replace(sim.getCurrentDrawAmps(), Amps);
+        inputs.torqueCurrent.mut_replace(sim.getCurrentDrawAmps(), Amps);
 
     }
 }

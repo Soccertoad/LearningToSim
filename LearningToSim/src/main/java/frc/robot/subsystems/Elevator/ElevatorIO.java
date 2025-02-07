@@ -10,8 +10,15 @@ import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
 
 public interface ElevatorIO {
+    
+    //@AutoLog
     class ElevatorIOInputs {
+        public MutDistance position = Inches.mutable(0);
+        public MutLinearVelocity velocity = InchesPerSecond.mutable(0);
 
+        public MutVoltage appliedVolts = Volts.mutable(0);
+        public MutCurrent supplyCurrent = Amps.mutable(0);
+        public MutCurrent torqueCurrent = Amps.mutable(0);
     }
 
     void updateIputs(ElevatorIOInputs inputs);
